@@ -1,14 +1,26 @@
 import { Request, Response } from "express";
 import PersonalDetails from "../Models/personalDetails.modals.js";
+import { console } from "inspector";
+import { v4 as uuidv4 } from "uuid";
 
 // Define error type for better type safety
 interface ErrorWithMessage {
   message: string;
 }
 
-export const createPersonalDetails = async (req: Request, res: Response): Promise<void> => {
+export const createPersonalDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const details = new PersonalDetails(req.body);
+    const lastRecord = await PersonalDetails.findOne().sort({ rollNo: -1 });
+    const nextRollNo = lastRecord ? lastRecord.rollNo + 1 : 10000; // Start from 10000 if no records exist
+
+    const details = new PersonalDetails({
+      ...req.body,
+      rollNo: nextRollNo,
+      uniqueId: uuidv4(),
+    });
     const savedata = await details.save();
     res.status(201).json(savedata);
   } catch (error) {
@@ -18,7 +30,10 @@ export const createPersonalDetails = async (req: Request, res: Response): Promis
   }
 };
 
-export const getAllPersonalDetails = async (_req: Request, res: Response): Promise<void> => {
+export const getAllPersonalDetails = async (
+  _req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const details = await PersonalDetails.find();
     res.json(details);
@@ -29,7 +44,10 @@ export const getAllPersonalDetails = async (_req: Request, res: Response): Promi
   }
 };
 
-export const updatePersonalDetails = async (req: Request, res: Response): Promise<void> => {
+export const updatePersonalDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const details = await PersonalDetails.findByIdAndUpdate(
       req.params.id,
@@ -48,7 +66,10 @@ export const updatePersonalDetails = async (req: Request, res: Response): Promis
   }
 };
 
-export const getPersonalDetailsById = async (req: Request, res: Response): Promise<void> => {
+export const getPersonalDetailsById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const details = await PersonalDetails.findById(req.params.id); // Remove the object wrapper
     if (!details) {
@@ -63,7 +84,10 @@ export const getPersonalDetailsById = async (req: Request, res: Response): Promi
   }
 };
 
-export const deletePersonalDetails = async (req: Request, res: Response): Promise<void> => {
+export const deletePersonalDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const details = await PersonalDetails.findByIdAndDelete(req.params.id);
     if (!details) {

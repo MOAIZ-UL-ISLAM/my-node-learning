@@ -4,6 +4,8 @@ import { JOB_TYPES, DOMICILE_TYPES } from "../utils/contstants.js";
 
 const personalDetailsSchema = new Schema<IPersonalDetails>(
   {
+    rollNo: { type: Number, unique: true, required: true }, // Sequential roll number
+    uniqueId: { type: String, unique: true, required: true }, // Unique identifier
     jobType: {
       type: String,
       required: true,
@@ -63,7 +65,7 @@ const personalDetailsSchema = new Schema<IPersonalDetails>(
   }
 );
 
-export default  mongoose.model<IPersonalDetails>(
+export default mongoose.model<IPersonalDetails>(
   "PersonalDetails",
   personalDetailsSchema
 );
