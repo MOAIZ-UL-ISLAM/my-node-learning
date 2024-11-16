@@ -1,0 +1,30 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.user
+*.sln
+*.tmp
+*.bak
+*.orig
+*.bkp
+*.old
+
+# Logs
+logs/
+
+# Build Outputs
+dist/
+build/
+
+# Test files
+coverage/
+
+# Environment variables
+.env
