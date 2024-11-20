@@ -31,11 +31,30 @@ export const createPersonalDetails = async (
 };
 
 export const getAllPersonalDetails = async (
-  _req: Request,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const details = await PersonalDetails.find();
+    const { rollNo, cnicNumber } = req.query;
+    let query = {};
+
+    // Build query based on provided parameters
+    if (rollNo) {
+      // Convert string to number since rollNo is stored as number
+      query = { ...query, rollNo: parseInt(rollNo as string) };
+    }
+    
+    if (cnicNumber) {
+      query = { ...query, cnicNumber: cnicNumber as string };
+    }
+
+    const details = await PersonalDetails.find(query);
+    
+    if (details.length === 0) {
+      res.status(404).json({ message: "No records found matching the criteria" });
+      return;
+    }
+
     res.json(details);
   } catch (error) {
     const err = error as ErrorWithMessage;
@@ -43,6 +62,8 @@ export const getAllPersonalDetails = async (
     console.error(error);
   }
 };
+
+
 
 export const updatePersonalDetails = async (
   req: Request,
